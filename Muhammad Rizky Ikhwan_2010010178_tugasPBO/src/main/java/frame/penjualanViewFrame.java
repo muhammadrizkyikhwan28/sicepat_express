@@ -9,7 +9,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.sql.*;
 
-public class karyawanViewFrame extends JFrame{
+public class penjualanViewFrame extends JFrame{
     private JPanel mainPanel;
     private JPanel cariPanel;
     private JTextField cariTextField;
@@ -22,7 +22,7 @@ public class karyawanViewFrame extends JFrame{
     private JButton cetakButton;
     private JButton tutupButton;
 
-    public karyawanViewFrame(){
+    public penjualanViewFrame(){
         tutupButton.addActionListener(e -> {
             dispose();
         });
@@ -59,7 +59,7 @@ public class karyawanViewFrame extends JFrame{
                 String idString = tm.getValueAt(barisTerpilih,0).toString();
                 int id = Integer.parseInt(idString);
 
-                String deleteSQL = "DELETE FROM karyawan WHERE id = ?";
+                String deleteSQL = "DELETE FROM penjualan WHERE id = ?";
                 Connection c = Koneksi.getConnection();
                 PreparedStatement ps;
                 try {
@@ -76,10 +76,10 @@ public class karyawanViewFrame extends JFrame{
             String keyword = "%" + cariTextField.getText() + "%";
             String keyword1 = "%" + cariTextField.getText() + "%";
             String keyword2 = "%" + cariTextField.getText() + "%";
-            String searchSQL = "SELECT karyawan.id,karyawan.nama, jabatan.jabatan, shiff.shiff " +
-                    "FROM ((karyawan INNER JOIN jabatan ON karyawan.id_jabatan = jabatan.id) " +
-                    "INNER JOIN shiff ON karyawan.id_shiff = shiff.id) "+
-                    "WHERE jabatan like ? OR nama like ? OR shiff like ? ";
+            String searchSQL = "SELECT penjualan.id,penjualan.nama_pelanggan, kasir.nama_kasir, barang.nama_barang " +
+                    "FROM ((penjualan INNER JOIN kasir ON penjualan.id_kasir = kasir.id) " +
+                    "INNER JOIN barang ON penjualan.id_barang = barang.id) "+
+                    "WHERE nama_kasir like ? OR nama_pelanggan like ? OR nama_barang like ? ";
 
             Connection c = Koneksi.getConnection();
             try {
@@ -93,9 +93,9 @@ public class karyawanViewFrame extends JFrame{
                 Object[] row = new Object[4];
                 while (rs.next()){
                     row[0] = rs.getInt("id");
-                    row[1] = rs.getString("nama");
-                    row[2] = rs.getString("jabatan");
-                    row[3] = rs.getString("shiff");
+                    row[1] = rs.getString("nama_pelanggan");
+                    row[2] = rs.getString("nama_kasir");
+                    row[3] = rs.getString("nama_barang");
                     dtm.addRow(row);
                 }
             } catch (SQLException ex) {
@@ -104,7 +104,7 @@ public class karyawanViewFrame extends JFrame{
 
         });
         tambahButton.addActionListener(e->{
-            karyawanInputFrame inputFrame = new karyawanInputFrame();
+            penjualanInputFrame inputFrame = new penjualanInputFrame();
             inputFrame.setVisible(true);
         });
         ubahButton.addActionListener(e->{
@@ -123,7 +123,7 @@ public class karyawanViewFrame extends JFrame{
             String idString = tm.getValueAt(barisTerpilih,0).toString();
             int id = Integer.parseInt(idString);
 
-            karyawanInputFrame inputFrame = new karyawanInputFrame();
+            penjualanInputFrame inputFrame = new penjualanInputFrame();
             inputFrame.setId(id);
             inputFrame.isiKomponen();
             inputFrame.setVisible(true);
@@ -133,7 +133,7 @@ public class karyawanViewFrame extends JFrame{
     }
 
     public void init(){
-        setTitle("Data karyawan");
+        setTitle("Data penjualan");
         setContentPane(mainPanel);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
@@ -141,15 +141,15 @@ public class karyawanViewFrame extends JFrame{
     }
 
     public void isiTable(){
-        String selectSQL = "SELECT karyawan.id,karyawan.nama, jabatan.jabatan, shiff.shiff " +
-                "FROM ((karyawan INNER JOIN jabatan ON karyawan.id_jabatan = jabatan.id) " +
-                "INNER JOIN shiff ON karyawan.id_shiff = shiff.id) ";
+        String selectSQL = "SELECT penjualan.id,penjualan.nama_pelanggan, kasir.nama_kasir, barang.nama_barang " +
+                "FROM ((penjualan INNER JOIN kasir ON penjualan.id_kasir = kasir.id) " +
+                "INNER JOIN barang ON penjualan.id_barang = barang.id) ";
         Connection c = Koneksi.getConnection();
         try {
             Statement s = c.createStatement();
             ResultSet rs = s.executeQuery(selectSQL);
 
-            String header[] = {"id","nama","jabatan","shiff"};
+            String header[] = {"id","nama_pelanggan","nama_kasir","nama_barang"};
             DefaultTableModel dtm = new DefaultTableModel(header,0);
             viewTable.setModel(dtm);
 
@@ -160,9 +160,9 @@ public class karyawanViewFrame extends JFrame{
             Object[] row = new Object[4];
             while (rs.next()){
                 row[0] = rs.getInt("id");
-                row[1] = rs.getString("nama");
-                row[2] = rs.getString("jabatan");
-                row[3] = rs.getString("shiff");
+                row[1] = rs.getString("nama_pelanggan");
+                row[2] = rs.getString("nama_kasir");
+                row[3] = rs.getString("nama_barang");
                 dtm.addRow(row);
             }
 
